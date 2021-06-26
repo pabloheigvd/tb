@@ -1,0 +1,16 @@
+[global]
+bs=4K                   # taille de block
+iodepth=256
+direct=1
+ioengine=libaio         # industry standard???
+group_reporting
+time_based
+runtime=120
+numjobs=4               # nombre de threads 
+size=512M               # taille du job/threads
+                        # 4*512M = 2GB
+name=raw-readwrite 
+rw=randrw               # write est dangereux
+
+[job1]
+filename=/dev/nvme0n1p7 # partition inutilisée (~100G)
