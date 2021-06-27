@@ -1,0 +1,20 @@
+[global]
+name=write_bw
+readwrite=randwrite
+
+randrepeat=0            # disable seed for RNG
+verify=0                # TODO comprendre???
+                        # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
+ioengine=libaio
+direct=1
+gtod_reduce=1
+filename=/data/fiotest
+bs=4K
+iodepth=16
+fdatasync=0
+size=250G
+time_based
+ramp_time=10s
+runtime=30s
+
+[architecting-it-test4-write-bandwidth]

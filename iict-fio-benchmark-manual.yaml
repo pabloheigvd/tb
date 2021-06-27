@@ -1,0 +1,47 @@
+# inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fiobench-longhorn-pvc
+  namespace: mercado
+  labels:
+    bench: manual
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+---
+# inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: manual
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: manual
+  template:
+    metadata:
+      labels:
+        fiobench: manual
+    spec:
+      containers:
+        - name: fiobench
+          image: alpine:3.14
+          # clever hack to keep pod running: https://stackoverflow.com/a/40093356
+          command: [ "/bin/sh", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
+          volumeMounts:
+            - name: test-volume
+              mountPath: /data
+      volumes:
+        - name: test-volume
+          persistentVolumeClaim:
+            claimName: fiobench-longhorn-pvc
