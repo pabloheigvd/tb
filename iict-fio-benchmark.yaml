@@ -1,0 +1,49 @@
+# inspired from https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fio-jobs-pv-claim
+spec:
+  storageClassName: ssd
+  # storageClassName: gp2
+  # storageClassName: local-storage
+  # storageClassName: ibmc-block-bronze
+  # storageClassName: ibmc-block-silver
+  # storageClassName: ibmc-block-gold
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fio-jobs
+spec:
+  template:
+    spec:
+      containers:
+      - name: fio-jobs
+        image:                    # TODO my fio-jobs image
+        imagePullPolicy: Always   # TODO what???
+        env:
+          - name: DBENCH_MOUNTPOINT
+            value: /data
+          # - name: DBENCH_QUICK
+          #   value: "yes"
+          # - name: FIO_SIZE
+          #   value: 1G
+          # - name: FIO_OFFSET_INCREMENT
+          #   value: 256M
+          # - name: FIO_DIRECT
+          #   value: "0"
+        volumeMounts:
+        - name: fio-jobs-pv
+          mountPath: /data
+      restartPolicy: Never
+      volumes:
+      - name: fio-jobs-pv
+        persistentVolumeClaim:
+          claimName: fio-jobs-pv-claim
+  backoffLimit: 4 # TODO what???
