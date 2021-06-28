@@ -9,7 +9,8 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['iict-fiojobs']
+    tags:
+      - v0.*
 
 env:
   REGISTRY: ghcr.io
