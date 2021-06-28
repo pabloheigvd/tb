@@ -1,0 +1,51 @@
+# inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
+#kind: PersistentVolumeClaim
+#apiVersion: v1
+#metadata:
+#  name: fiobench-longhorn-pvc
+#  labels:
+#    bench: manual
+#spec:
+#  storageClassName: longhorn
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 100Gi
+#---
+#kind: StorageClass
+#apiVersion: storage.k8s.io/v1
+#metadata:
+#  name: longhorn
+#provisioner: driver.longhorn.io
+#allowVolumeExpansion: true
+#parameters:
+#  numberOfReplicas: "3"
+#  staleReplicaTimeout: "2880" # 48 hours in minutes
+#  fromBackup: ""
+#---
+# inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: manual
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: manual
+  template:
+    metadata:
+      labels:
+        fiobench: manual
+    spec:
+      containers:
+        - name: fiobench
+          image: alpine:3.14
+          # clever hack to keep pod running: https://stackoverflow.com/a/40093356
+          command: [ "/bin/sh", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
+
