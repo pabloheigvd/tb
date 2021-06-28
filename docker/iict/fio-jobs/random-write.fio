@@ -9,8 +9,9 @@ runtime=120
 numjobs=4               # nombre de threads
 size=512M               # taille du job/threads
                         # 4*512M = 2GB
-name=raw-readread
-rw=randread             # write est dangereux
+name=random-write
+rw=randwrite            # write est dangereux
+directory=/data
 
 [job1]
-directory=/volumes      # TODO define
+
