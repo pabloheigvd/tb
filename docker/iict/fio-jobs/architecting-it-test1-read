@@ -17,3 +17,5 @@ size=250G
 time_based
 ramp_time=10s
 runtime=30s
+
+[architecting-it-test1-read]

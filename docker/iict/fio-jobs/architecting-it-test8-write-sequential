@@ -21,3 +21,5 @@ numjobs=4
 offset_increment=500M   # This option is useful if there are several jobs which are intended to operate
                         # on a file in parallel disjoint segments, with even spacing
                         # between the starting points
+
+[architecting-it-test8-write-sequential]
