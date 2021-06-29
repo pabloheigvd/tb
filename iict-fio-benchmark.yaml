@@ -1,49 +1,53 @@
-# inspired from https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
+# inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: fio-jobs-pv-claim
+  name: fiobench-longhorn-pvc
+  namespace: mercado
+  labels:
+    bench: image
 spec:
-  storageClassName: ssd
-  # storageClassName: gp2
-  # storageClassName: local-storage
-  # storageClassName: ibmc-block-bronze
-  # storageClassName: ibmc-block-silver
-  # storageClassName: ibmc-block-gold
+  storageClassName: longhorn
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 100Gi
 ---
-apiVersion: batch/v1
-kind: Job
+# inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: fio-jobs
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: image
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
   template:
+    metadata:
+      labels:
+        fiobench: image
     spec:
       containers:
-      - name: fio-jobs
-        image:                    # TODO my fio-jobs image
-        imagePullPolicy: Always   # TODO what???
-        env:
-          - name: DBENCH_MOUNTPOINT
-            value: /data
-          # - name: DBENCH_QUICK
-          #   value: "yes"
-          # - name: FIO_SIZE
-          #   value: 1G
-          # - name: FIO_OFFSET_INCREMENT
-          #   value: 256M
-          # - name: FIO_DIRECT
-          #   value: "0"
-        volumeMounts:
-        - name: fio-jobs-pv
-          mountPath: /data
-      restartPolicy: Never
+        - name: fiobench
+          image: ghcr.io/pabloheigvd/tb-fiobench:latest
+          # FIXME  ErrImagePull: rpc error: code = Unknown desc = Error response from daemon:
+          #        Get https://ghcr.io/v2/pabloheigvd/tb/manifests/latest: unauthorized
+          #  kubectl run fiobench --image ghcr.io/pabloheigvd/tb:latest -l fiobench=run --namespace=mercado
+          #  ErrImagePull: rpc error: code = Unknown desc = Error response from daemon:
+          #  Get https://ghcr.io/v2/pabloheigvd/tb/manifests/latest: unauthorized
+          #
+
+          # clever hack to keep pod running: https://stackoverflow.com/a/40093356
+          command: [ "/bin/sh", "run-all-jobs.sh" ]
+          volumeMounts:
+            - name: test-volume
+              mountPath: /data
       volumes:
-      - name: fio-jobs-pv
-        persistentVolumeClaim:
-          claimName: fio-jobs-pv-claim
-  backoffLimit: 4 # TODO what???
+        - name: test-volume
+          persistentVolumeClaim:
+            claimName: fiobench-longhorn-pvc
