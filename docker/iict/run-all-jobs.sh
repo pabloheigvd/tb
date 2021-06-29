@@ -13,4 +13,7 @@ for i in *; do
     fio "$i" --output "$i"-output --output-format=json
 done
 
-echo "All jobs done"
+echo "All jobs done. You can now get all the outputs:"
+ls -d "*-output"
+echo "Now sleeping tight..."
+while true; do sleep 30s; done

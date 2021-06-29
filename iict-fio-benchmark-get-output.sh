@@ -10,7 +10,4 @@ for i in architecting-it-test*; do
     ../../../fio-jobs/iict/"$i"-output
 done
 
-echo "All jobs output retrieved.You can now get all the outputs:"
-ls -d "*-output"
-echo "Now sleeping tight..."
-while true; do sleep 30s; done
+echo "All jobs output retrieved."
