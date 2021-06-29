@@ -34,15 +34,7 @@ spec:
     spec:
       containers:
         - name: fiobench
-          image: ghcr.io/pabloheigvd/tb-fiobench:0.1.3
-          # FIXME  ErrImagePull: rpc error: code = Unknown desc = Error response from daemon:
-          #        Get https://ghcr.io/v2/pabloheigvd/tb/manifests/latest: unauthorized
-          #  kubectl run fiobench --image ghcr.io/pabloheigvd/tb:latest -l fiobench=run --namespace=mercado
-          #  ErrImagePull: rpc error: code = Unknown desc = Error response from daemon:
-          #  Get https://ghcr.io/v2/pabloheigvd/tb/manifests/latest: unauthorized
-          #
-
-          # clever hack to keep pod running: https://stackoverflow.com/a/40093356
+          image: ghcr.io/pabloheigvd/tb-fiobench:latest
           command: [ "/bin/sh", "run-all-jobs.sh" ]
           volumeMounts:
             - name: test-volume
