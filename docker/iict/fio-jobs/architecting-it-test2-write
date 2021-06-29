@@ -1,3 +1,4 @@
+# https://github.com/architectingit/k8sstorage/blob/4ebbc1337a0639806d707093bdd1bf0a8c8bb781/perfraw.sh#L36
 [global]
 name=write_iops
 readwrite=randwrite

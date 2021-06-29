@@ -1,0 +1,23 @@
+# https://github.com/architectingit/k8sstorage/blob/4ebbc1337a0639806d707093bdd1bf0a8c8bb781/perfraw.sh#L79
+[global]
+name=write_iops
+readwrite=write_seq
+
+randrepeat=0            # disable seed for RNG
+verify=0                # TODO comprendre???
+                        # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
+ioengine=libaio
+direct=1
+gtod_reduce=1
+filename=/data/fiotest
+bs=1M
+iodepth=16
+fdatasync=0
+size=250G
+time_based
+ramp_time=10s
+runtime=30s
+numjobs=4
+offset_increment=500M   # This option is useful if there are several jobs which are intended to operate
+                        # on a file in parallel disjoint segments, with even spacing
+                        # between the starting points

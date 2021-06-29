@@ -1,5 +1,5 @@
 [global]
-name=write_iops
+name=write_bw
 readwrite=randwrite
 
 randrepeat=0            # disable seed for RNG
