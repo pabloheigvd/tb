@@ -12,13 +12,13 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 1000Gi
 ---
 # inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fiobench-deployment
+  name: fiobench
   namespace: mercado
   labels:
     fiobench: image
