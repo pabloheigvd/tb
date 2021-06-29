@@ -1,4 +1,4 @@
-# from: https://docs.github.com/en/actions/guides/publishing-docker-images
+# inspired from: https://docs.github.com/en/actions/guides/publishing-docker-images
 
 name: Create and publish a Docker image
 
@@ -14,7 +14,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}-fiobench
 
 jobs:
   build-and-push-image:
@@ -45,7 +45,7 @@ jobs:
             org.opencontainers.image.title=fiobench
             org.opencontainers.image.description=Runs various fio jobs to benchmark your longhorn cluster. Jobs are located in the fio-jobs folder with their matching job outputs as well.
             org.opencontainers.image.version={{tag}}
-            org.opencontainers.image.documentation=Use kubectl to apply this config then exec
+            org.opencontainers.image.documentation=Use kubectl to apply this config then open an interactive session to fetch the results.
             org.opencontainers.image.created={{date 'YYYY-MM-DD'}}
 
       - name: Build and push Docker image
