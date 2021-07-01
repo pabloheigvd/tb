@@ -1,0 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-test
+  namespace: mercado
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "0"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+  nodeSelector: "10.193.72.32"

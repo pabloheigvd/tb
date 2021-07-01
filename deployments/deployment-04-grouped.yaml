@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fiobench-longhorn-pv
+  namespace: mercado
+  labels:
+    bench: image
+    deployment: "04"
+    subject: grouped
+spec:
+  capacity:
+    storage: 2Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: longhorn
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeAttributes:
+      staleReplicaTimeout: '2880'
+    volumeHandle: existing-longhorn-volume
+---
+# inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fiobench-longhorn-pvc
+  namespace: mercado
+  labels:
+    bench: image
+    deployment: "04"
+    subject: grouped
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  nodeSelector:
+    name: "10.193.72.32"
+  resources:
+    requests:
+      storage: 1000Gi
+---
+# inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "04"
+    subject: grouped
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
+  template:
+    metadata:
+      labels:
+        fiobench: image
+        deployment: "04"
+        subject: grouped
+    spec:
+      containers:
+        - name: fiobench
+          image: ghcr.io/pabloheigvd/tb-fiobench:latest
+          command: [ "/bin/sh", "run-all-jobs.sh" ]
+          volumeMounts:
+            - name: test-volume
+              mountPath: /data
+      nodeSelector:
+        name: "10.193.72.32"
+      volumes:
+        - name: test-volume
+          persistentVolumeClaim:
+            claimName: fiobench-longhorn-pvc
