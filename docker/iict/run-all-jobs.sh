@@ -14,6 +14,6 @@ for i in *; do
 done
 
 echo "All jobs done. You can now get all the outputs:"
-ls -d "*-output"
+ls *-output
 echo "Now sleeping tight..."
 while true; do sleep 30s; done
