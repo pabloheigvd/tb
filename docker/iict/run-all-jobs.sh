@@ -2,7 +2,7 @@
 
 # https://stackoverflow.com/a/14505622
 echo "Will run all fio jobs shortly thereafter..."
-cd fio-jobs-output || exit
+cd fio-jobs || exit
 fio --version
 echo "Jobs to be executed:"
 ls
