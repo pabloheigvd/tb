@@ -30,4 +30,21 @@ for i in architecting-it-test*; do
     echo "✅ $i-output"
 done
 
+kubectl --namespace=mercado cp \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options output option-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file options output option"
+
+kubectl --namespace=mercado cp \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options raw-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file options raw-output-output"
+
+kubectl --namespace=mercado cp \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options raw-output-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options output option"
+
+kubectl --namespace=mercado cp \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options output option-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options raw-output-output"
+
+
 echo "All jobs output retrieved."

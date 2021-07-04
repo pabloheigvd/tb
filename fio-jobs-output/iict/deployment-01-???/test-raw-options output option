@@ -1,0 +1,1 @@
+fio: option <architecting-it-test7-sequential-read: (g=0): rw=read, bs=(R) 1024KiB-1024KiB, (W) 1024KiB-1024KiB, (T) 1024KiB-1024KiB, ioengine=libaio, iodepth=16> outside of [] job section
