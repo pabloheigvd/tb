@@ -6,10 +6,22 @@ cd fio-jobs || exit
 fio --version
 echo "Jobs to be executed:"
 ls
-echo "test"
+echo "test raw-options raw-output"
 fio --randrepeat=0 --verify=0 --ioengine=libaio --direct=1 --name=read_latency \
 --filename=/data/fiotest --bs=4K --iodepth=4 --size=250G --readwrite=randread \
---time_based --ramp_time=10s --runtime=30s
+--time_based --ramp_time=10s --runtime=30s > "test-raw-options raw-output"
+
+echo "test raw-options output option"
+fio --randrepeat=0 --verify=0 --ioengine=libaio --direct=1 --name=read_latency \
+--filename=/data/fiotest --bs=4K --iodepth=4 --size=250G --readwrite=randread \
+--time_based --ramp_time=10s --runtime=30s --output "test-raw-options output option"
+
+echo "test file options raw-output"
+fio "architecting-it-test7-sequential-read" > "test-file options raw-output"
+
+echo "test file options output option"
+fio "architecting-it-test7-sequential-read" --output "test-file options output option" \
+--output-format=json
 
 for i in *; do
     [ -f "$i" ] || break
