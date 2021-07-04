@@ -9,8 +9,13 @@ ls
 for i in *; do
     [ -f "$i" ] || break
     echo "Executing job $i..."
-    # output does not work in job mode: https://www.spinics.net/lists/fio/msg05818.html
-    fio "$i" --output "$i"-output --output-format=json
+    # null latency with json output
+    if [  "$i" = "architecting-it-test5-read-latency" ] || [ "$i" = "architecting-it-test5-write-latency" ]; then
+      fio "$i" > "$i-output"
+    else
+      # output does not work in job mode: https://www.spinics.net/lists/fio/msg05818.html
+      fio "$i" --output "$i"-output --output-format=json
+    fi
 done
 
 echo "All jobs done. You can now get all the outputs:"
