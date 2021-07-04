@@ -12,6 +12,7 @@ gtod_reduce=1
 filename=/data/fiotest
 bs=1M
 iodepth=16
+# TODO --thread???
 fdatasync=0
 size=250G
 time_based
