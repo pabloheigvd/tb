@@ -35,16 +35,16 @@ kubectl --namespace=mercado cp \
     ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options raw-output"
 
 kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-raw-options output option" \
-    ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options output option"
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-raw-options json-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options json-output"
 
 kubectl --namespace=mercado cp \
     $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file-options raw-output" \
     ../../../fio-jobs-output/iict/deployment-$1-???/"test-file-options raw-output"
 
 kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file-options output option" \
-    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file-options output option"
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file-options json-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file-options json-output"
 
 
 echo "All jobs output retrieved."

@@ -2,19 +2,19 @@ architecting-it-test5-read-latency: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 
 fio-3.27
 Starting 1 process
 
-architecting-it-test5-read-latency: (groupid=0, jobs=1): err= 0: pid=616: Sun Jul  4 18:19:19 2021
-  read: IOPS=7, BW=30.0KiB/s (30.7kB/s)(968KiB/32264msec)
-   bw (  KiB/s): min=    8, max=   88, per=99.99%, avg=30.84, stdev=18.03, samples=62
-   iops        : min=    2, max=   22, avg= 7.71, stdev= 4.51, samples=62
-  cpu          : usr=0.01%, sys=0.06%, ctx=242, majf=0, minf=58
+architecting-it-test5-read-latency: (groupid=0, jobs=1): err= 0: pid=617: Sun Jul  4 19:32:41 2021
+  read: IOPS=8, BW=35.4KiB/s (36.2kB/s)(1164KiB/32881msec)
+   bw (  KiB/s): min=    8, max=   80, per=100.00%, avg=37.16, stdev=18.33, samples=62
+   iops        : min=    2, max=   20, avg= 9.29, stdev= 4.58, samples=62
+  cpu          : usr=0.03%, sys=0.05%, ctx=290, majf=0, minf=58
   IO depths    : 1=0.0%, 2=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     issued rwts: total=239,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+     issued rwts: total=288,0,0,0 short=0,0,0,0 dropped=0,0,0,0
      latency   : target=0, window=0, percentile=100.00%, depth=4
 
 Run status group 0 (all jobs):
-   READ: bw=30.0KiB/s (30.7kB/s), 30.0KiB/s-30.0KiB/s (30.7kB/s-30.7kB/s), io=968KiB (991kB), run=32264-32264msec
+   READ: bw=35.4KiB/s (36.2kB/s), 35.4KiB/s-35.4KiB/s (36.2kB/s-36.2kB/s), io=1164KiB (1192kB), run=32881-32881msec
 
 Disk stats (read/write):
-  sdc: ios=317/3, merge=0/1, ticks=168368/2584, in_queue=171296, util=99.82%
+  sdc: ios=381/3, merge=0/1, ticks=168004/2220, in_queue=171616, util=99.83%
