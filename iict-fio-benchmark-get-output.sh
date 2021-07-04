@@ -21,14 +21,7 @@ mkdir -p "fio-jobs-output/iict/deployment-$1-???"
 
 echo "Retrieving all jobs output..."
 cd docker/iict/fio-jobs || exit
-for i in architecting-it-test*; do
-    [ -f "$i" ] || break
-    # shellcheck disable=SC2046
-    kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"$i"-output \
-    ../../../fio-jobs-output/iict/deployment-$1-???/"$i"-output
-    echo "✅ $i-output"
-done
+
 
 kubectl --namespace=mercado cp \
     $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-raw-options raw-output" \
@@ -46,5 +39,13 @@ kubectl --namespace=mercado cp \
     $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file-options json-output" \
     ../../../fio-jobs-output/iict/deployment-$1-???/"test-file-options json-output"
 
+for i in architecting-it-test*; do
+    [ -f "$i" ] || break
+    # shellcheck disable=SC2046
+    kubectl --namespace=mercado cp \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"$i"-output \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"$i"-output
+    echo "✅ $i-output"
+done
 
 echo "All jobs output retrieved."
