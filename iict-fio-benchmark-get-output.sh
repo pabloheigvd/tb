@@ -31,20 +31,20 @@ for i in architecting-it-test*; do
 done
 
 kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options output option-output" \
-    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file options output option"
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-raw-options raw-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options raw-output"
 
 kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options raw-output" \
-    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file options raw-output-output"
-
-kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options raw-output-output" \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-raw-options output option" \
     ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options output option"
 
 kubectl --namespace=mercado cp \
-    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file options output option-output" \
-    ../../../fio-jobs-output/iict/deployment-$1-???/"test-raw-options raw-output-output"
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file-options raw-output" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file-options raw-output"
+
+kubectl --namespace=mercado cp \
+    $(kubectl get pods --namespace=mercado -o=jsonpath='{.items[0].metadata.name}'):fio-jobs/"test-file-options output option" \
+    ../../../fio-jobs-output/iict/deployment-$1-???/"test-file-options output option"
 
 
 echo "All jobs output retrieved."
