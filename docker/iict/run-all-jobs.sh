@@ -8,17 +8,17 @@ echo "Jobs to be executed:"
 ls
 
 echo "============================================"
-echo "tes-raw-options raw-output"
+echo "test-raw-options raw-output"
 fio --randrepeat=0 --verify=0 --ioengine=libaio --direct=1 --name=read_latency --filename=/data/fiotest --bs=4K --iodepth=4 --size=250G --readwrite=randread --time_based --ramp_time=10s --runtime=30s > "test-raw-options raw-output"
 
 echo "test-raw-options json-output"
-fio --randrepeat=0 --verify=0 --ioengine=libaio --direct=1 --name=read_latency --filename=/data/fiotest --bs=4K --iodepth=4 --size=250G --readwrite=randread --time_based --ramp_time=10s --runtime=30s --output="test-raw-options output option" --output-format=json
+fio --randrepeat=0 --verify=0 --ioengine=libaio --direct=1 --name=read_latency --filename=/data/fiotest --bs=4K --iodepth=4 --size=250G --readwrite=randread --time_based --ramp_time=10s --runtime=30s --output="test-raw-options json-output" --output-format=json
 
 echo "test-file-options raw-output"
 fio "architecting-it-test7-sequential-read" > "test-file-options raw-output"
 
 echo "test-file-options json-output"
-fio "architecting-it-test7-sequential-read" --output="test-file-options output option" --output-format=json
+fio "architecting-it-test7-sequential-read" --output="test-file-options json-output" --output-format=json
 echo "============================================"
 
 for i in *; do
