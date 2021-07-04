@@ -1,0 +1,52 @@
+architecting-it-test7-sequential-read: (g=0): rw=read, bs=(R) 1024KiB-1024KiB, (W) 1024KiB-1024KiB, (T) 1024KiB-1024KiB, ioengine=libaio, iodepth=16
+...
+fio-3.27
+Starting 4 processes
+architecting-it-test7-sequential-read: Laying out IO file (1 file / 257500MiB)
+
+architecting-it-test7-sequential-read: (groupid=0, jobs=1): err= 0: pid=208: Sun Jul  4 18:14:34 2021
+  read: IOPS=37, BW=38.1MiB/s (39.9MB/s)(1149MiB/30163msec)
+   bw (  KiB/s): min= 8192, max=180224, per=35.08%, avg=60901.05, stdev=49153.58, samples=38
+   iops        : min=    8, max=  176, avg=59.47, stdev=48.00, samples=38
+  cpu          : usr=0.04%, sys=0.51%, ctx=1148, majf=0, minf=72
+  IO depths    : 1=0.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=100.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=1134,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=16
+architecting-it-test7-sequential-read: (groupid=0, jobs=1): err= 0: pid=209: Sun Jul  4 18:14:34 2021
+  read: IOPS=40, BW=41.3MiB/s (43.4MB/s)(1277MiB/30883msec)
+   bw (  KiB/s): min= 6144, max=137216, per=35.19%, avg=61094.00, stdev=40356.74, samples=42
+   iops        : min=    6, max=  134, avg=59.62, stdev=39.44, samples=42
+  cpu          : usr=0.01%, sys=0.75%, ctx=1265, majf=0, minf=12361
+  IO depths    : 1=0.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=100.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=1262,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=16
+architecting-it-test7-sequential-read: (groupid=0, jobs=1): err= 0: pid=210: Sun Jul  4 18:14:34 2021
+  read: IOPS=49, BW=49.8MiB/s (52.3MB/s)(1533MiB/30753msec)
+   bw (  KiB/s): min= 6144, max=161792, per=41.86%, avg=72667.74, stdev=42265.45, samples=42
+   iops        : min=    6, max=  158, avg=70.90, stdev=41.25, samples=42
+  cpu          : usr=0.02%, sys=0.72%, ctx=1525, majf=0, minf=74
+  IO depths    : 1=0.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=100.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=1518,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=16
+architecting-it-test7-sequential-read: (groupid=0, jobs=1): err= 0: pid=211: Sun Jul  4 18:14:34 2021
+  read: IOPS=41, BW=42.5MiB/s (44.6MB/s)(1277MiB/30055msec)
+   bw (  KiB/s): min= 2048, max=155648, per=34.62%, avg=60106.42, stdev=46357.94, samples=43
+   iops        : min=    2, max=  152, avg=58.70, stdev=45.27, samples=43
+  cpu          : usr=0.05%, sys=0.61%, ctx=1263, majf=0, minf=4182
+  IO depths    : 1=0.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=100.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=99.9%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=1262,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=16
+
+Run status group 0 (all jobs):
+   READ: bw=170MiB/s (178MB/s), 38.1MiB/s-49.8MiB/s (39.9MB/s-52.3MB/s), io=5236MiB (5490MB), run=30055-30883msec
+
+Disk stats (read/write):
+  sdc: ios=5222/4, merge=0/1, ticks=1945992/32, in_queue=1955468, util=22.72%
