@@ -1,8 +1,8 @@
 {
   "fio version" : "fio-3.27",
-  "timestamp" : 1625235638,
-  "timestamp_ms" : 1625235638479,
-  "time" : "Fri Jul  2 14:20:38 2021",
+  "timestamp" : 1625402163,
+  "timestamp_ms" : 1625402163172,
+  "time" : "Sun Jul  4 12:36:03 2021",
   "global options" : {
     "name" : "write_latency",
     "rw" : "randwrite",
@@ -69,13 +69,13 @@
         "iops_samples" : 0
       },
       "write" : {
-        "io_bytes" : 64081920,
-        "io_kbytes" : 62580,
-        "bw_bytes" : 2130241,
-        "bw" : 2080,
-        "iops" : 519.978725,
-        "runtime" : 30082,
-        "total_ios" : 15642,
+        "io_bytes" : 100638720,
+        "io_kbytes" : 98280,
+        "bw_bytes" : 3332297,
+        "bw" : 3254,
+        "iops" : 813.449886,
+        "runtime" : 30201,
+        "total_ios" : 24567,
         "short_ios" : 0,
         "drop_ios" : 0,
         "slat_ns" : {
@@ -99,17 +99,17 @@
           "stddev" : 0.000000,
           "N" : 0
         },
-        "bw_min" : 80,
-        "bw_max" : 11736,
+        "bw_min" : 8,
+        "bw_max" : 10080,
         "bw_agg" : 100.000000,
-        "bw_mean" : 2607.250000,
-        "bw_dev" : 2705.922295,
-        "bw_samples" : 48,
-        "iops_min" : 20,
-        "iops_max" : 2934,
-        "iops_mean" : 651.666667,
-        "iops_stddev" : 676.446766,
-        "iops_samples" : 48
+        "bw_mean" : 3634.407407,
+        "bw_dev" : 2778.558969,
+        "bw_samples" : 54,
+        "iops_min" : 2,
+        "iops_max" : 2520,
+        "iops_mean" : 908.481481,
+        "iops_stddev" : 694.591063,
+        "iops_samples" : 54
       },
       "trim" : {
         "io_bytes" : 0,
@@ -164,10 +164,10 @@
           "N" : 0
         }
       },
-      "job_runtime" : 30081,
-      "usr_cpu" : 0.369004,
-      "sys_cpu" : 1.183471,
-      "ctx" : 14659,
+      "job_runtime" : 30200,
+      "usr_cpu" : 0.387417,
+      "sys_cpu" : 1.956954,
+      "ctx" : 23172,
       "majf" : 0,
       "minf" : 58,
       "iodepth_level" : {
@@ -243,15 +243,15 @@
   ],
   "disk_util" : [
     {
-      "name" : "sde",
+      "name" : "sdc",
       "read_ios" : 0,
-      "write_ios" : 21580,
+      "write_ios" : 31201,
       "read_merges" : 0,
-      "write_merges" : 14,
+      "write_merges" : 18,
       "read_ticks" : 0,
-      "write_ticks" : 203608,
-      "in_queue" : 206812,
-      "util" : 99.789442
+      "write_ticks" : 210924,
+      "in_queue" : 215000,
+      "util" : 99.761905
     }
   ]
 }
