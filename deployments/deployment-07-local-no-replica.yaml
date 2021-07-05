@@ -6,9 +6,10 @@ metadata:
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 parameters:
-  numberOfReplicas: "3"
+  numberOfReplicas: "0"
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
+  nodeSelector: "local-no-replica,node1"
 ---
 # inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
 kind: PersistentVolumeClaim
@@ -18,8 +19,8 @@ metadata:
   namespace: mercado
   labels:
     bench: image
-    deployment: "05"
-    subject: no-replica
+    deployment: "07"
+    subject: local-no-replica
 spec:
   storageClassName: longhorn-test
   accessModes:
@@ -37,8 +38,8 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: "05"
-    subject: no-replica
+    deployment: "07"
+    subject: local-no-replica
 spec:
   replicas: 1
   selector:
@@ -48,8 +49,8 @@ spec:
     metadata:
       labels:
         fiobench: image
-        deployment: "05"
-        subject: no-replica
+        deployment: "07"
+        subject: local-no-replica
     spec:
       containers:
         - name: fiobench
@@ -58,6 +59,8 @@ spec:
           volumeMounts:
             - name: test-volume
               mountPath: /data
+      nodeSelector:
+        local-no-replica: node1
       volumes:
         - name: test-volume
           persistentVolumeClaim:
