@@ -6,9 +6,11 @@ metadata:
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 parameters:
-  numberOfReplicas: "3"
+  numberOfReplicas: "0"
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
+  nodeSelector:
+    remote-no-replica: node2
 ---
 # inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
 kind: PersistentVolumeClaim
@@ -18,8 +20,8 @@ metadata:
   namespace: mercado
   labels:
     bench: image
-    deployment: "05"
-    subject: no-replica
+    deployment: "08"
+    subject: remote-no-replica
 spec:
   storageClassName: longhorn-test
   accessModes:
@@ -28,6 +30,8 @@ spec:
   resources:
     requests:
       storage: 1000Gi
+  nodeSelector:
+    remote-no-replica: node1
 ---
 # inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
 apiVersion: apps/v1
@@ -37,7 +41,7 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: "05"
+    deployment: "08"
     subject: no-replica
 spec:
   replicas: 1
@@ -48,8 +52,8 @@ spec:
     metadata:
       labels:
         fiobench: image
-        deployment: "05"
-        subject: no-replica
+        deployment: "08"
+        subject: remote-no-replica
     spec:
       containers:
         - name: fiobench

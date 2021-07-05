@@ -18,7 +18,7 @@ metadata:
   namespace: mercado
   labels:
     bench: image
-    deployment: "03"
+    deployment: "06"
     subject: no-replica
 spec:
   storageClassName: longhorn-test
@@ -37,7 +37,7 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: "03"
+    deployment: "06"
     subject: no-replica
 spec:
   replicas: 1
@@ -48,7 +48,7 @@ spec:
     metadata:
       labels:
         fiobench: image
-        deployment: "03"
+        deployment: "06"
         subject: no-replica
     spec:
       containers:
