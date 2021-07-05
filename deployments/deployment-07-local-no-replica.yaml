@@ -9,7 +9,28 @@ parameters:
   numberOfReplicas: "0"
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
-  nodeSelector: "local-no-replica,node1"
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: longhorn-test-pv
+spec:
+  capacity:
+    storage: 1000Gi
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-test
+  local:
+    path: /data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - "10.193.72.32"
 ---
 # inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
 kind: PersistentVolumeClaim
@@ -52,15 +73,15 @@ spec:
         deployment: "07"
         subject: local-no-replica
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: "10.193.72.32"
       containers:
         - name: fiobench
           image: ghcr.io/pabloheigvd/tb-fiobench:latest
           command: [ "/bin/sh", "run-all-jobs.sh" ]
           volumeMounts:
             - name: test-volume
-              mountPath: /data
-      nodeSelector:
-        local-no-replica: node1
+              mountPath: /
       volumes:
         - name: test-volume
           persistentVolumeClaim:
