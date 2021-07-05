@@ -15,7 +15,7 @@ spec:
     driver: driver.longhorn.io
     fsType: ext4
     volumeAttributes:
-      numberOfReplica: "0"
+      numberOfReplicas: "0"
       size: 1000Gi
       staleReplicaTimeout: "2880"
     volumeHandle: "longhorn-test-pv"
