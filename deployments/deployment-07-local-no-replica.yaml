@@ -1,21 +1,36 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-test
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "07"
+    subject: local-no-replica
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+parameters:
+  numberOfReplicas: "0"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+---
+# inspired https://stackoverflow.com/questions/52207577/binding-statefulset-to-local-persistent-volumes-volume-node-affinity-conflict
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: man
+  name: longhorn-test-0
   namespace: mercado
   labels:
-    bench: image
+    fiobench: image
     deployment: "07"
     subject: local-no-replica
 spec:
-  storageClassName: "longhorn"
   capacity:
     storage: 1000Gi
   accessModes:
   - ReadWriteOnce
-  claimRef:
-    namespace: mercado
-    name: fiobench-longhorn-pvc
+  storageClassName: longhorn-test
   csi:
     driver: driver.longhorn.io
     fsType: ext4
@@ -23,7 +38,11 @@ spec:
       numberOfReplicas: "0"
       size: 1000Gi
       staleReplicaTimeout: "2880"
-    volumeHandle: "man" # FIXME ControllerPublishVolume: the volume longhorn-test-pv not exists
+    volumeHandle: "longhorn-test-0"
+  persistentVolumeReclaimPolicy: Delete
+  claimRef:
+    name: test-volume-fiobench-0
+    namespace: mercado
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -33,49 +52,9 @@ spec:
           values:
           - "10.193.72.32"
 ---
-#kind: StorageClass
-#apiVersion: storage.k8s.io/v1
-#metadata:
-#  name: longhorn-test
-#  namespace: mercado
-#  labels:
-#    bench: image
-#    deployment: "07"
-#    subject: local-no-replica
-#provisioner: driver.longhorn.io
-#allowVolumeExpansion: true
-#
-#parameters:
-#  numberOfReplicas: "0"
-#  staleReplicaTimeout: "2880" # 48 hours in minutes
-#  fromBackup: ""
-#  nodeName: "10.193.72.32" #  does not change node Affinity
-#  nodeSelector: "kubernetes.io/hostname=10.193.72.32" # node tag kubernetes.io/hostname=10.193.72.33 does not exist
----
-# inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: fiobench-longhorn-pvc
-  namespace: mercado
-  labels:
-    bench: image
-    deployment: "07"
-    subject: local-no-replica
-spec:
-  storageClassName: longhorn-test
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  volumeName: man
-  resources:
-    requests:
-      storage: 1000Gi
-#      numberOfReplicas: "0" # cannot adjust replica number here
----
 # inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: fiobench
   namespace: mercado
@@ -84,6 +63,7 @@ metadata:
     deployment: "07"
     subject: local-no-replica
 spec:
+  serviceName: "fiobench"
   replicas: 1
   selector:
     matchLabels:
@@ -97,18 +77,24 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: "10.193.72.32"
-      containers:
+      # kubectl get pod --namespace=mercado
+      #NAME         READY   STATUS              RESTARTS   AGE
+      #fiobench-0   0/1     ContainerCreating   0          3m56s
+      containers: # FIXME https://stackoverflow.com/a/54418623 container stuck in ContainerCreating state
         - name: fiobench
           image: ghcr.io/pabloheigvd/tb-fiobench:latest
           command: [ "/bin/sh", "run-all-jobs.sh" ]
           volumeMounts:
             - name: test-volume
               mountPath: /data
-      volumes:
-        - name: test-volume
-          persistentVolumeClaim:
-            claimName: fiobench-longhorn-pvc
-#          csi:
-#            volumeAttributes:
-#              nodeSelector: "kubernetes.io/hostname=10.193.72.32"
-#            driver: longhorn
+  volumeClaimTemplates:
+    - metadata:
+        name: test-volume
+        namespace: mercado
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: longhorn-test
+        # FIXME longhorn does not work either
+        resources:
+          requests:
+            storage: 1000Gi
