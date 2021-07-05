@@ -4,8 +4,8 @@ metadata:
   name: longhorn-test-pv
   labels:
     bench: image
-    deployment: "07"
-    subject: local-no-replica
+    deployment: "08"
+    subject: remote-no-replica
 spec:
   capacity:
     storage: 1000Gi
@@ -36,8 +36,8 @@ metadata:
   namespace: mercado
   labels:
     bench: image
-    deployment: "07"
-    subject: local-no-replica
+    deployment: "08"
+    subject: remote-no-replica
 spec:
   storageClassName: longhorn
   accessModes:
@@ -55,8 +55,8 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: "07"
-    subject: local-no-replica
+    deployment: "08"
+    subject: remote-no-replica
 spec:
   replicas: 1
   selector:
@@ -66,8 +66,8 @@ spec:
     metadata:
       labels:
         fiobench: image
-        deployment: "07"
-        subject: local-no-replica
+        deployment: "08"
+        subject: remote-no-replica
     spec:
       nodeSelector:
         kubernetes.io/hostname: "10.193.72.32"
