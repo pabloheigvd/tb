@@ -4,7 +4,7 @@ name=seq_read
 readwrite=read
 
 randrepeat=0            # disable seed for RNG
-verify=0                # TODO comprendre???
+verify=0                # verification is made when writting
                         # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
 ioengine=libaio
 direct=1
@@ -12,12 +12,13 @@ gtod_reduce=1
 filename=/data/fiotest
 bs=1M
 iodepth=16
-# TODO --thread???
 fdatasync=0
 size=250G
 time_based
 ramp_time=10s
 runtime=30s
+group_reporting=1       # no group reporting, how can he have the correct values?
+                        # https://github.com/architectingit/k8sstorage/blob/main/perfraw.sh#L72
 numjobs=4
 offset_increment=500M   # This option is useful if there are several jobs which are intended to operate
                         # on a file in parallel disjoint segments, with even spacing

@@ -3,11 +3,15 @@ name=write_bw
 readwrite=randwrite
 
 randrepeat=0            # disable seed for RNG
-verify=0                # TODO comprendre???
+verify=0                # verification is made when writting
                         # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
 ioengine=libaio
 direct=1
-gtod_reduce=1
+gtod_reduce=1           # reduces gettimeofday calls BUT somehow does not use 'disable_bw_measurements'
+                        # even though the up to date doc says it does:
+                        # Enable all of the gettimeofday(2) reducing options (disable_clat, disable_slat,
+                        # >> disable_bw_measurement <<)
+                        # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-gtod-reduce
 filename=/data/fiotest
 bs=4K
 iodepth=16
