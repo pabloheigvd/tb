@@ -4,7 +4,7 @@ name=read_iops
 readwrite=randread
 
 randrepeat=0            # disable seed for RNG
-verify=0                # TODO comprendre???
+verify=0                # verification is made when writting
                         # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
 ioengine=libaio
 direct=1

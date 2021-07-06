@@ -4,11 +4,12 @@ name=read_latency
 readwrite=randread
 
 randrepeat=0            # disable seed for RNG
-verify=0                # TODO comprendre???
+verify=0                # verification is made when writting
                         # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
 ioengine=libaio
 direct=1
-gtod_reduce=1
+gtod_reduce=0           # latency measures are disabled with gtod_reduce=1
+                        # https://fio.readthedocs.io/en/latest/fio_doc.html#cmdoption-arg-gtod-reduce
 filename=/data/fiotest
 bs=4K
 iodepth=4
