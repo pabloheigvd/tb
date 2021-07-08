@@ -1,34 +1,34 @@
-#apiVersion: v1 # TODO uncomment
-#kind: PersistentVolume
-#metadata:
-#  name: fiobench-pv
-#  namespace: mercado
-#  labels:
-#    fiobench: image
-#    deployment: "06"
-#    subject: local-no-replica
-#spec:
-#  capacity:
-#    storage: 1000Gi
-#  volumeMode: Filesystem
-##  storageClassName: longhorn
-#  accessModes:
-#    - ReadWriteOnce
-##  csi: # TODO uncomment
-##    driver: io.rancher.longhorn
-##    fsType: ext4
-##    volumeAttributes:
-##      numberOfReplicates: '0'
-##      staleReplicaTimeout: '2880'
-##    volumeHandle: fiobench-volume-handle # required
-##  nodeAffinity: # TODO uncomment, fails too
-##    required:
-##      nodeSelectorTerms:
-##        - matchExpressions:
-##            - key: kubernetes.io/hostname
-##              operator: In
-##              values:
-##                - "10.193.72.32"
+apiVersion: v1 # TOD uncomment
+kind: PersistentVolume
+metadata:
+  name: fiobench-pv
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "06"
+    subject: local-no-replica
+spec:
+  storageClassName: longhorn-static
+  capacity:
+    storage: 1000Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: '1'
+      staleReplicaTimeout: '2880'
+    volumeHandle: fiobench-vol # refers to volume on node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - "10.193.72.32"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -45,11 +45,13 @@ spec:
   resources:
     requests:
       storage: 1000Gi
-#  selector: # TODO uncomment because need to bind to statically provisioned PV
-#    matchLabels:
-#      fiobench: image
-#      deployment: "06"
-#      subject: local-no-replica
+  volumeName: fiobench-pv
+  storageClassName: longhorn-static
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "06"
+      subject: local-no-replica
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -78,13 +80,12 @@ spec:
       - name: fiobench
         image: ghcr.io/pabloheigvd/tb-fiobench:latest
         command: [ "/bin/sh", "run-all-jobs.sh" ]
-        volumeMounts: # FIXME does not work
+        volumeMounts:
           - name: fiobench-storage
             mountPath: /data
-#      nodeSelector: # TODO uncomment, testing
-#        kubernetes.io/hostname: "10.193.72.32"
+      nodeSelector:
+        kubernetes.io/hostname: "10.193.72.32"
       volumes:
         - name: fiobench-storage
           persistentVolumeClaim:
             claimName: fiobench-pvc
-
