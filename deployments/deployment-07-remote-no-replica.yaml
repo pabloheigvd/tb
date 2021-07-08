@@ -1,57 +1,62 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: longhorn-test-pv
+  name: fiobench-pv
+  namespace: mercado
   labels:
-    bench: image
+    fiobench: image
     deployment: "07"
     subject: remote-no-replica
 spec:
+  storageClassName: longhorn-static
   capacity:
     storage: 1000Gi
+  volumeMode: Filesystem
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   csi:
     driver: driver.longhorn.io
     fsType: ext4
     volumeAttributes:
-      numberOfReplicas: "0"
-      size: 1000Gi
-      staleReplicaTimeout: "2880"
-    volumeHandle: "longhorn-test-pv"
+      numberOfReplicas: '0'
+      staleReplicaTimeout: '2880'
+    volumeHandle: fiobench-vol # refers to volume on node
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - "10.193.72.33"
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - "10.193.72.33"
 ---
-# inspired from: https://raw.githubusercontent.com/mahaupt/fiobench/master/fiobench.yaml
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: fiobench-longhorn-pvc
+  name: fiobench-pvc
   namespace: mercado
   labels:
-    bench: image
+    fiobench: image
     deployment: "07"
     subject: remote-no-replica
 spec:
-  storageClassName: longhorn
   accessModes:
     - ReadWriteOnce
-  volumeMode: Filesystem
   resources:
     requests:
       storage: 1000Gi
+  volumeName: fiobench-pv
+  storageClassName: longhorn-static
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "07"
+      subject: remote-no-replica
 ---
-# inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fiobench
+  name: fiobench-deployment
   namespace: mercado
   labels:
     fiobench: image
@@ -62,6 +67,8 @@ spec:
   selector:
     matchLabels:
       fiobench: image
+      deployment: "07"
+      subject: remote-no-replica
   template:
     metadata:
       labels:
@@ -69,16 +76,19 @@ spec:
         deployment: "07"
         subject: remote-no-replica
     spec:
+      containers:
+      - name: fiobench
+        image: ghcr.io/pabloheigvd/tb-fiobench:latest
+        command: [ "/bin/sh", "run-all-jobs.sh" ]
+        volumeMounts:
+          - name: fiobench-storage
+            mountPath: /data
       nodeSelector:
         kubernetes.io/hostname: "10.193.72.32"
-      containers:
-        - name: fiobench
-          image: ghcr.io/pabloheigvd/tb-fiobench:latest
-          command: [ "/bin/sh", "run-all-jobs.sh" ]
-          volumeMounts:
-            - name: test-volume
-              mountPath: /data
       volumes:
-        - name: test-volume
+        - name: fiobench-storage
           persistentVolumeClaim:
-            claimName: fiobench-longhorn-pvc
+            claimName: fiobench-pvc
+
+# FIXME FailedScheduling, 1 node(s) had volume node affinity conflict, 2 node(s) didn't match node selector.
+# it seems volume cannot be separated from the working container
