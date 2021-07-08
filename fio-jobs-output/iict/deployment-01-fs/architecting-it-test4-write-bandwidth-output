@@ -1,8 +1,8 @@
 {
   "fio version" : "fio-3.27",
-  "timestamp" : 1625432452,
-  "timestamp_ms" : 1625432452001,
-  "time" : "Sun Jul  4 21:00:52 2021",
+  "timestamp" : 1625731158,
+  "timestamp_ms" : 1625731158885,
+  "time" : "Thu Jul  8 07:59:18 2021",
   "global options" : {
     "name" : "write_bw",
     "rw" : "randwrite",
@@ -70,13 +70,13 @@
         "iops_samples" : 0
       },
       "write" : {
-        "io_bytes" : 97193984,
-        "io_kbytes" : 94916,
-        "bw_bytes" : 3239259,
-        "bw" : 3163,
-        "iops" : 790.334944,
-        "runtime" : 30005,
-        "total_ios" : 23714,
+        "io_bytes" : 88678400,
+        "io_kbytes" : 86600,
+        "bw_bytes" : 2955060,
+        "bw" : 2885,
+        "iops" : 720.950382,
+        "runtime" : 30009,
+        "total_ios" : 21635,
         "short_ios" : 0,
         "drop_ios" : 0,
         "slat_ns" : {
@@ -100,17 +100,17 @@
           "stddev" : 0.000000,
           "N" : 0
         },
-        "bw_min" : 136,
-        "bw_max" : 12120,
+        "bw_min" : 104,
+        "bw_max" : 9112,
         "bw_agg" : 100.000000,
-        "bw_mean" : 3717.392157,
-        "bw_dev" : 3114.853544,
-        "bw_samples" : 51,
-        "iops_min" : 34,
-        "iops_max" : 3030,
-        "iops_mean" : 929.196078,
-        "iops_stddev" : 778.765870,
-        "iops_samples" : 51
+        "bw_mean" : 3454.120000,
+        "bw_dev" : 2325.434747,
+        "bw_samples" : 50,
+        "iops_min" : 26,
+        "iops_max" : 2278,
+        "iops_mean" : 863.420000,
+        "iops_stddev" : 581.311961,
+        "iops_samples" : 50
       },
       "trim" : {
         "io_bytes" : 0,
@@ -165,10 +165,10 @@
           "N" : 0
         }
       },
-      "job_runtime" : 30004,
-      "usr_cpu" : 0.183309,
-      "sys_cpu" : 1.833089,
-      "ctx" : 20108,
+      "job_runtime" : 30008,
+      "usr_cpu" : 0.286590,
+      "sys_cpu" : 1.766196,
+      "ctx" : 17981,
       "majf" : 0,
       "minf" : 58,
       "iodepth_level" : {
@@ -191,7 +191,7 @@
       },
       "iodepth_complete" : {
         "0" : 0.000000,
-        "4" : 99.995783,
+        "4" : 99.995378,
         "8" : 0.000000,
         "16" : 0.100000,
         "32" : 0.000000,
@@ -246,13 +246,13 @@
     {
       "name" : "sdc",
       "read_ios" : 0,
-      "write_ios" : 32462,
+      "write_ios" : 30496,
       "read_merges" : 0,
-      "write_merges" : 17,
+      "write_merges" : 18,
       "read_ticks" : 0,
-      "write_ticks" : 695188,
-      "in_queue" : 695296,
-      "util" : 99.785440
+      "write_ticks" : 698308,
+      "in_queue" : 698288,
+      "util" : 99.819186
     }
   ]
 }
