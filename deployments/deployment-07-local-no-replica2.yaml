@@ -1,10 +1,3 @@
-# kubectl describe pod -n mercado
-# Events:
-#  Type     Reason       Age   From               Message
-#  ----     ------       ----  ----               -------
-#  Normal   Scheduled    3m5s  default-scheduler  Successfully assigned mercado/fiobench-deployment-5fb794bdfd-thrkf to 10.193.72.32
-#  Warning  FailedMount  61s   kubelet            Unable to attach or mount volumes: unmounted volumes=[fiobench-storage], unattached volumes=[fiobench-storage default-token-j452w]: timed out waiting for the condition
-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -47,7 +40,6 @@ metadata:
     deployment: "07"
     subject: local-no-replica
 spec:
-#  storageClassName: longhorn
   accessModes:
     - ReadWriteOnce
   resources:
@@ -82,12 +74,13 @@ spec:
       - name: fiobench
         image: ghcr.io/pabloheigvd/tb-fiobench:latest
         command: [ "/bin/sh", "run-all-jobs.sh" ]
-#        volumeMounts: # FIXME FailedMount
-#          - name: fiobench-storage
-#            mountPath: "/data"
+        volumeMounts: # FIXME does not work
+          - name: fiobench-storage
+            mountPath: /data
       nodeSelector:
         kubernetes.io/hostname: "10.193.72.32"
       volumes:
         - name: fiobench-storage
           persistentVolumeClaim:
             claimName: fiobench-pvc
+
