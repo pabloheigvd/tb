@@ -1,3 +1,4 @@
+# the most basic of configurations with a single replica running on the same Kubernetes host as the fio script.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6,7 +7,7 @@ metadata:
   labels:
     fiobench: image
     deployment: "06"
-    subject: local-no-replica
+    subject: local-volume-no-replica
 spec:
   storageClassName: longhorn-static
   capacity:
@@ -20,6 +21,11 @@ spec:
     volumeAttributes:
       numberOfReplicas: '1'
       staleReplicaTimeout: '2880'
+      dataLocality: 'best-effort' # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#set-the-data-locality-for-individual-volumes-using-a-storageclass
+      # the manually created volume has 'data locality' set to 'best-effort' AND is attached to node "10.193.72.32"
+      # "best-effort. This option instructs Longhorn to try to keep a replica on the same node as the attached
+      # volume (workload)"
+      # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings
     volumeHandle: fiobench-vol # refers to volume on node
   nodeAffinity:
     required:
@@ -38,7 +44,7 @@ metadata:
   labels:
     fiobench: image
     deployment: "06"
-    subject: local-no-replica
+    subject: local-volume-no-replica
 spec:
   accessModes:
     - ReadWriteOnce
@@ -51,7 +57,7 @@ spec:
     matchLabels:
       fiobench: image
       deployment: "06"
-      subject: local-no-replica
+      subject: local-volume-no-replica
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,20 +67,20 @@ metadata:
   labels:
     fiobench: image
     deployment: "06"
-    subject: local-no-replica
+    subject: local-volume-no-replica
 spec:
   replicas: 1
   selector:
     matchLabels:
       fiobench: image
       deployment: "06"
-      subject: local-no-replica
+      subject: local-volume-no-replica
   template:
     metadata:
       labels:
         fiobench: image
         deployment: "06"
-        subject: local-no-replica
+        subject: local-volume-no-replica
     spec:
       containers:
       - name: fiobench

@@ -1,0 +1,78 @@
+# "A local volume with replica on another host"
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: fiobench-sc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "08"
+    subject: remote-volume-no-replica
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+  dataLocality: "disabled"
+  # the manually created volume has 'data locality' set to 'disabled'
+  # "This is the default option. There may or may not be a replica on the same node as the attached volume (workload)."
+  # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fiobench-pvc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "08"
+    subject: remote-volume-no-replica
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  volumeName: fiobench-pv
+  storageClassName: fiobench-sc
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "08"
+      subject: remote-volume-no-replica
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "08"
+    subject: remote-volume-no-replica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "08"
+      subject: remote-volume-no-replica
+  template:
+    metadata:
+      labels:
+        fiobench: image
+        deployment: "08"
+        subject: remote-volume-no-replica
+    spec:
+      containers:
+      - name: fiobench
+        image: ghcr.io/pabloheigvd/tb-fiobench:latest
+        command: [ "/bin/sh", "run-all-jobs.sh" ]
+        volumeMounts:
+          - name: fiobench-storage
+            mountPath: /data
+      volumes:
+        - name: fiobench-storage
+          persistentVolumeClaim:
+            claimName: fiobench-pvc
