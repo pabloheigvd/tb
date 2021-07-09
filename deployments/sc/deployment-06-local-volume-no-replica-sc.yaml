@@ -1,0 +1,77 @@
+# the most basic of configurations with a single replica running on the same Kubernetes host as the fio script.
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: fiobench-sc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "06"
+    subject: local-volume-no-replica
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+  nodeSelector: "node1"
+  dataLocality: "best-effort"
+  # This option instructs Longhorn to try to keep a replica on the same node as the attached
+  # volume (workload)"
+  # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings
+
+  # Replica Node Level Soft Anti-Affinity: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fiobench-pvc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "06"
+    subject: local-volume-no-replica
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  storageClassName: fiobench-sc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "06"
+    subject: local-volume-no-replica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "06"
+      subject: local-volume-no-replica
+  template:
+    metadata:
+      labels:
+        fiobench: image
+        deployment: "06"
+        subject: local-volume-no-replica
+    spec:
+      containers:
+      - name: fiobench
+        image: ghcr.io/pabloheigvd/tb-fiobench:latest
+        command: [ "/bin/sh", "run-all-jobs.sh" ]
+        volumeMounts:
+          - name: fiobench-storage
+            mountPath: /data
+      nodeSelector:
+        kubernetes.io/hostname: "10.193.72.32"
+      volumes:
+        - name: fiobench-storage
+          persistentVolumeClaim:
+            claimName: fiobench-pvc

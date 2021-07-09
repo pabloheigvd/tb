@@ -23,9 +23,10 @@ spec:
       staleReplicaTimeout: '2880'
       dataLocality: 'best-effort' # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#set-the-data-locality-for-individual-volumes-using-a-storageclass
       # the manually created volume has 'data locality' set to 'best-effort' AND is attached to node "10.193.72.32"
-      # "best-effort. This option instructs Longhorn to try to keep a replica on the same node as the attached
+      # This option instructs Longhorn to try to keep a replica on the same node as the attached
       # volume (workload)"
       # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings
+      nodeSelector: 'node1'
     volumeHandle: fiobench-vol # refers to volume on node
   nodeAffinity:
     required:
