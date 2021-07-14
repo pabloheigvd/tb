@@ -1,23 +1,10 @@
-# how to demonstrate:
-# créer un pv (1000Gi, fiobench-vol, 1 replica, node tag: node2)
-
-# Events:
-#  Type     Reason            Age   From               Message
-#  ----     ------            ----  ----               -------
-#  Warning  FailedScheduling  9s    default-scheduler  0/3 nodes are available: 1 node(s) had volume node affinity
-  # conflict, 2 node(s) didn't match node selector.
-#  Warning  FailedScheduling  9s    default-scheduler  0/3 nodes are available: 1 node(s) had volume node affinity
-  # conflict, 2 node(s) didn't match node selector.
-
-# En sachant que malgrès que la policy dataLocality modifiée, on lit:
-# When data locality is disabled, a Longhorn volume can be backed by replicas on any nodes in the cluster and
-  # accessed by a pod running on any node in the cluster.
-# https://longhorn.io/docs/1.1.2/high-availability/data-locality/
-
-# Je ne pense pas avoir fait une erreur dans ce deployment. Je pense que c'est une erreur dans la documentation. Les
-# tests d'Architecting-IT ont peut-être été fait sur une version plus ancienne de Longhorn avec des features différentes
-# mais franchement j'en doute. Je ne vois pas comment il a pu possiblement réaliser les deux tests où le workload et
-# le volume se trouvent sur des nodes différents.
+# Requires:
+# manual creation of volume:
+# - Name: fiobench-vol
+# - Size: 1000Gi
+# - Number of Replicas: 1
+# - Data Locality: disabled
+# - Node tag: -
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -25,8 +12,8 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: test
-    subject: separated-workload-from-volume
+    deployment: "08"
+    subject: separate-replica-node-affinity
 spec:
   storageClassName: longhorn-static
   capacity:
@@ -41,8 +28,8 @@ spec:
       numberOfReplicas: '1'
       staleReplicaTimeout: '2880'
       dataLocality: 'disabled'
-      nodeSelector: 'node2'
-    volumeHandle: fiobench-vol # refers to volume on node
+#      nodeSelector: 'node1-2'        # unused
+    volumeHandle: fiobench-vol      # refers to volume on node
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -50,6 +37,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
+                - "10.193.72.32"
                 - "10.193.72.33"
 ---
 apiVersion: v1
@@ -59,8 +47,8 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: test
-    subject: separated-workload-from-volume
+    deployment: "08"
+    subject: separate-replica-node-affinity
 spec:
   accessModes:
     - ReadWriteOnce
@@ -82,21 +70,21 @@ metadata:
   namespace: mercado
   labels:
     fiobench: image
-    deployment: test
-    subject: separated-workload-from-volume
+    deployment: "08"
+    subject: separate-replica-node-affinity
 spec:
   replicas: 1
   selector:
     matchLabels:
       fiobench: image
-      deployment: test
-      subject: separated-workload-from-volume
+      deployment: "08"
+      subject: separate-replica-node-affinity
   template:
     metadata:
       labels:
         fiobench: image
-        deployment: test
-        subject: separated-workload-from-volume
+        deployment: "08"
+        subject: separate-replica-node-affinity
     spec:
       containers:
       - name: fiobench

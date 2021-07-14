@@ -143,16 +143,44 @@ Events:
   Warning  FailedMount         8s (x3 over 4m39s)     kubelet                  Unable to attach or mount volumes: unmounted volumes=[fiobench-storage], unattached volumes=[fiobench-storage default-token-9jncr]: timed out waiting for the condition
 
 ```
-En effet, le pod demande a ce que le volume se trouve sur le même node que lui. Cela va en contradiction avec la [documentation Longhorn](https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings) qui dit que: *"When data locality is disabled, a Longhorn volume can be [...] accessed by a pod running on any node in the cluster."*
+En effet, le pod demande a ce que le volume se trouve sur le même node que lui. Cela va en contradiction avec la [documentation](https://longhorn.io/docs/1.1.2/high-availability/data-locality) Longhorn qui dit que: *"When data locality is disabled, a Longhorn volume can be [...] accessed by a pod running on any node in the cluster."*
 
 ## Test séparation volume/(single) replica
 Dans une deuxième partie, on désire montrer que l'on peut séparer le volume de la replica en les plaçant sur des nodes différents.
 
-On déploie `07-separate-replica-disable-data-locality.yaml` en utilisant `nodeSelector` et `nodeAffinity` pour que la replica puisse se trouver soit sur le node 1, soit sur le node 2. `Replica Node Level Soft Anti-Affinity est désactivé par défaut dans le Longhorn UI :
+On déploie `07-separate-replica-disable-data-locality.yaml` en utilisant `nodeSelector` et `nodeAffinity` pour que la replica puisse se trouver soit sur le node 1, soit sur le node 2. `Replica Node Level Soft Anti-Affinity` est désactivé par défaut dans le Longhorn UI :
 ![](img/replica-soft-level-anti-affinity.png)
 
 On constate que la replica et le volume se trouve sur le node 1 :
 ![](img/07-volume-details.png)
 
 ---
-TODO drop les restrictions une à une...
+On déploie `08-separate-replica-node-affinity.yaml` avec seulement le `nodeAffinity` pour le node 1 et 2. 
+
+La replica se trouve sur le node 3 :
+![](img/08-volume-details.png)
+
+---
+On désire vérifier si le placement de la replica est lié au `nodeAffinity` avec `09-separate-replica-node-affinity.yaml`. On met le `nodeAffinity` pour le node 1 et 3, on s'attends à ce que la replica se retrouve sur le node 2.
+
+La replica se trouve sur le node 1 :
+![](img/09-volume-details.png)
+
+En répétant l'expérience, on voit que la replica peut aller sur le node 2 :
+![](img/09-volume-details-2.png)
+
+On comprends que `nodeAffinity` ne guarantit pas le placement de la replica. Par contre, on voit que désactiver `dataLocality` permet à la replica de vivre sur une autre node que le volume. 
+
+---
+On va essayer uniquement `nodeSelector` avec `10-separate-replica-tag.yaml`. On utilise le tag `node2-3` (qui se trouve sur le node 2 et 3) pour éviter que la replica aille sur le node 1 où est le workload.
+
+La replica se trouve sur le node 3:
+![](img/10-volume-details.png)
+
+En répétant l'expérience, la replica se trouve sur le node 2:
+![](img/10-volume-details-2.png)
+
+En effet, d'après la [documentation](https://longhorn.io/docs/1.1.2/references/settings/#system-managed-components-node-selector), on comprend que `nodeSelector` positionne les composants Longhorn (replica, instance manager) mais pas le volume, qui lui est contrôlé par `nodeAffinity`.
+
+## Conclusion
+Le volume ne peut pas être séparé du workload mais la replica peut être placée selon le `nodeSelector`. Le test d'Architecting-IT montant un volume distant n'est pas possible. Cependant il est vraisemblablement possible de constater les effets du networking en plaçant la replica loin du workload.

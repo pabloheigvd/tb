@@ -1,0 +1,101 @@
+# Requires:
+# manual creation of volume:
+# - Name: fiobench-vol
+# - Size: 1000Gi
+# - Number of Replicas: 1
+# - Data Locality: disabled
+# - Node tag: -
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fiobench-pv
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "09"
+    subject: separate-replica-node-affinity
+spec:
+  storageClassName: longhorn-static
+  capacity:
+    storage: 1000Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: '1'
+      staleReplicaTimeout: '2880'
+      dataLocality: 'disabled'
+#      nodeSelector: 'node1-2'        # unused
+    volumeHandle: fiobench-vol        # refers to volume on node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - "10.193.72.32"      # node 1
+                - "10.193.72.34"      # node 3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fiobench-pvc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "09"
+    subject: separate-replica-node-affinity
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  volumeName: fiobench-pv
+  storageClassName: longhorn-static
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: test
+      subject: separated-workload-from-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "09"
+    subject: separate-replica-node-affinity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "09"
+      subject: separate-replica-node-affinity
+  template:
+    metadata:
+      labels:
+        fiobench: image
+        deployment: "09"
+        subject: separate-replica-node-affinity
+    spec:
+      containers:
+      - name: fiobench
+        image: ghcr.io/pabloheigvd/tb-fiobench:latest
+        command: [ "/bin/sh", "run-all-jobs.sh" ]
+        volumeMounts:
+          - name: fiobench-storage
+            mountPath: /data
+      nodeSelector:
+        kubernetes.io/hostname: "10.193.72.32"
+      volumes:
+        - name: fiobench-storage
+          persistentVolumeClaim:
+            claimName: fiobench-pvc
