@@ -1,0 +1,89 @@
+# "A local volume with replica on another host"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fiobench-pv
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "08"
+    subject: remote-volume-no-replica
+spec:
+  storageClassName: longhorn-static
+  capacity:
+    storage: 1000Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: '1'
+      staleReplicaTimeout: '2880'
+      dataLocality: 'disabled' # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#set-the-data-locality-for-individual-volumes-using-a-storageclass
+      # the manually created volume has 'data locality' set to 'disabled' AND is attached to node "10.193.72.33"
+      # "There may or may not be a replica on the same node as the attached volume (workload)."
+      # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings
+      nodeSelector: 'node2'
+    volumeHandle: fiobench-vol # refers to volume on node
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fiobench-pvc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "08"
+    subject: remote-volume-no-replica
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  volumeName: fiobench-pv
+  storageClassName: longhorn-static
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "08"
+      subject: remote-volume-no-replica
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "08"
+    subject: remote-volume-no-replica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "08"
+      subject: remote-volume-no-replica
+  template:
+    metadata:
+      labels:
+        fiobench: image
+        deployment: "08"
+        subject: remote-volume-no-replica
+    spec:
+      containers:
+      - name: fiobench
+        image: ghcr.io/pabloheigvd/tb-fiobench:latest
+        command: [ "/bin/sh", "run-all-jobs.sh" ]
+        volumeMounts:
+          - name: fiobench-storage
+            mountPath: /data
+      nodeSelector:
+        kubernetes.io/hostname: "10.193.72.32"
+      volumes:
+        - name: fiobench-storage
+          persistentVolumeClaim:
+            claimName: fiobench-pvc
