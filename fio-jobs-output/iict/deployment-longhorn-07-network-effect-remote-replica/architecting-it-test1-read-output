@@ -1,8 +1,8 @@
 {
   "fio version" : "fio-3.27",
-  "timestamp" : 1625851309,
-  "timestamp_ms" : 1625851309025,
-  "time" : "Fri Jul  9 17:21:49 2021",
+  "timestamp" : 1626681564,
+  "timestamp_ms" : 1626681564717,
+  "time" : "Mon Jul 19 07:59:24 2021",
   "global options" : {
     "name" : "read_iops",
     "rw" : "randread",
@@ -27,13 +27,13 @@
       "eta" : 0,
       "elapsed" : 41,
       "read" : {
-        "io_bytes" : 143691776,
-        "io_kbytes" : 140324,
-        "bw_bytes" : 4783188,
-        "bw" : 4671,
-        "iops" : 1167.271396,
-        "runtime" : 30041,
-        "total_ios" : 35066,
+        "io_bytes" : 124465152,
+        "io_kbytes" : 121548,
+        "bw_bytes" : 4141935,
+        "bw" : 4044,
+        "iops" : 1010.715474,
+        "runtime" : 30050,
+        "total_ios" : 30372,
         "short_ios" : 0,
         "drop_ios" : 0,
         "slat_ns" : {
@@ -57,16 +57,16 @@
           "stddev" : 0.000000,
           "N" : 0
         },
-        "bw_min" : 3848,
-        "bw_max" : 5296,
+        "bw_min" : 3262,
+        "bw_max" : 4728,
         "bw_agg" : 100.000000,
-        "bw_mean" : 4674.316667,
-        "bw_dev" : 331.695464,
+        "bw_mean" : 4047.600000,
+        "bw_dev" : 322.025907,
         "bw_samples" : 60,
-        "iops_min" : 962,
-        "iops_max" : 1324,
-        "iops_mean" : 1168.500000,
-        "iops_stddev" : 82.862864,
+        "iops_min" : 815,
+        "iops_max" : 1182,
+        "iops_mean" : 1011.816667,
+        "iops_stddev" : 80.608384,
         "iops_samples" : 60
       },
       "write" : {
@@ -165,12 +165,12 @@
           "N" : 0
         }
       },
-      "job_runtime" : 30040,
-      "usr_cpu" : 1.188415,
-      "sys_cpu" : 4.211052,
-      "ctx" : 32947,
+      "job_runtime" : 30049,
+      "usr_cpu" : 0.968418,
+      "sys_cpu" : 4.020101,
+      "ctx" : 28312,
       "majf" : 0,
-      "minf" : 63,
+      "minf" : 58,
       "iodepth_level" : {
         "1" : 0.000000,
         "2" : 0.000000,
@@ -191,7 +191,7 @@
       },
       "iodepth_complete" : {
         "0" : 0.000000,
-        "4" : 99.997148,
+        "4" : 99.996708,
         "8" : 0.000000,
         "16" : 0.100000,
         "32" : 0.000000,
@@ -245,14 +245,14 @@
   "disk_util" : [
     {
       "name" : "sdc",
-      "read_ios" : 46479,
-      "write_ios" : 277,
+      "read_ios" : 40458,
+      "write_ios" : 411,
       "read_merges" : 0,
-      "write_merges" : 12,
-      "read_ticks" : 638160,
-      "write_ticks" : 16368,
-      "in_queue" : 654608,
-      "util" : 99.790440
+      "write_merges" : 14,
+      "read_ticks" : 638336,
+      "write_ticks" : 29288,
+      "in_queue" : 667748,
+      "util" : 99.830339
     }
   ]
 }

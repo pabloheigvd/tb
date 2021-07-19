@@ -18,8 +18,6 @@ parameters:
   # This option instructs Longhorn to try to keep a replica on the same node as the attached
   # volume (workload)"
   # https://longhorn.io/docs/1.1.2/high-availability/data-locality/#data-locality-settings
-
-  # Replica Node Level Soft Anti-Affinity (UI option): false (default)
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

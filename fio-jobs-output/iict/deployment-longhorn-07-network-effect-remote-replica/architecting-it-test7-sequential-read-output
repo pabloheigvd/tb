@@ -1,39 +1,42 @@
 {
   "fio version" : "fio-3.27",
-  "timestamp" : 1625848304,
-  "timestamp_ms" : 1625848304493,
-  "time" : "Fri Jul  9 16:31:44 2021",
+  "timestamp" : 1626682993,
+  "timestamp_ms" : 1626682993149,
+  "time" : "Mon Jul 19 08:23:13 2021",
   "global options" : {
-    "name" : "read_bw",
-    "rw" : "randread",
+    "name" : "seq_read",
+    "rw" : "read",
     "randrepeat" : "0",
     "verify" : "0",
     "ioengine" : "libaio",
     "direct" : "1",
     "gtod_reduce" : "1",
-    "bs" : "128K",
+    "bs" : "1M",
     "runtime" : "30s",
     "iodepth" : "16",
     "fdatasync" : "0",
     "size" : "250G",
     "ramp_time" : "10s",
+    "offset_increment" : "500M",
+    "group_reporting" : "1",
+    "numjobs" : "4",
     "filename" : "/data/fiotest"
   },
   "jobs" : [
     {
-      "jobname" : "architecting-it-test3-read-bandwidth",
+      "jobname" : "architecting-it-test7-sequential-read",
       "groupid" : 0,
       "error" : 0,
       "eta" : 0,
-      "elapsed" : 44,
+      "elapsed" : 165,
       "read" : {
-        "io_bytes" : 50724864,
-        "io_kbytes" : 49536,
-        "bw_bytes" : 1545547,
-        "bw" : 1509,
-        "iops" : 11.334552,
-        "runtime" : 32820,
-        "total_ios" : 372,
+        "io_bytes" : 8174698496,
+        "io_kbytes" : 7983104,
+        "bw_bytes" : 270229033,
+        "bw" : 263895,
+        "iops" : 255.727083,
+        "runtime" : 30251,
+        "total_ios" : 7736,
         "short_ios" : 0,
         "drop_ios" : 0,
         "slat_ns" : {
@@ -57,17 +60,17 @@
           "stddev" : 0.000000,
           "N" : 0
         },
-        "bw_min" : 256,
-        "bw_max" : 5130,
+        "bw_min" : 16384,
+        "bw_max" : 784810,
         "bw_agg" : 100.000000,
-        "bw_mean" : 1702.089286,
-        "bw_dev" : 1199.818597,
-        "bw_samples" : 56,
-        "iops_min" : 2,
-        "iops_max" : 40,
-        "iops_mean" : 13.285714,
-        "iops_stddev" : 9.360875,
-        "iops_samples" : 56
+        "bw_mean" : 310413.428846,
+        "bw_dev" : 47544.181248,
+        "bw_samples" : 202,
+        "iops_min" : 16,
+        "iops_max" : 766,
+        "iops_mean" : 302.999679,
+        "iops_stddev" : 46.406493,
+        "iops_samples" : 202
       },
       "write" : {
         "io_bytes" : 0,
@@ -165,12 +168,12 @@
           "N" : 0
         }
       },
-      "job_runtime" : 32819,
-      "usr_cpu" : 0.027423,
-      "sys_cpu" : 0.079222,
-      "ctx" : 388,
+      "job_runtime" : 120625,
+      "usr_cpu" : 0.068808,
+      "sys_cpu" : 0.964145,
+      "ctx" : 7793,
       "majf" : 0,
-      "minf" : 58,
+      "minf" : 4378,
       "iodepth_level" : {
         "1" : 0.000000,
         "2" : 0.000000,
@@ -191,9 +194,9 @@
       },
       "iodepth_complete" : {
         "0" : 0.000000,
-        "4" : 99.731903,
+        "4" : 99.948320,
         "8" : 0.000000,
-        "16" : 0.268097,
+        "16" : 0.100000,
         "32" : 0.000000,
         "64" : 0.000000,
         ">=64" : 0.000000
@@ -245,14 +248,14 @@
   "disk_util" : [
     {
       "name" : "sdc",
-      "read_ios" : 507,
-      "write_ios" : 56,
+      "read_ios" : 7693,
+      "write_ios" : 4,
       "read_merges" : 0,
-      "write_merges" : 8,
-      "read_ticks" : 664068,
-      "write_ticks" : 83716,
-      "in_queue" : 758716,
-      "util" : 99.872635
+      "write_merges" : 1,
+      "read_ticks" : 1930212,
+      "write_ticks" : 76,
+      "in_queue" : 1933452,
+      "util" : 18.472755
     }
   ]
 }

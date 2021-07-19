@@ -5,14 +5,16 @@ metadata:
   name: fiobench-longhorn-pvc
   namespace: mercado
   labels:
-    bench: manual
+    deployment: "00"
+    fiobench: manual
+    subject: manual
 spec:
   storageClassName: longhorn
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 1000Gi
 ---
 # inspired from: https://raw.githubusercontent.com/kubernetes/website/main/content/fr/examples/controllers/nginx-deployment.yaml
 apiVersion: apps/v1
@@ -21,7 +23,9 @@ metadata:
   name: fiobench-deployment
   namespace: mercado
   labels:
+    deployment: "00"
     fiobench: manual
+    subject: manual
 spec:
   replicas: 1
   selector:
@@ -30,11 +34,13 @@ spec:
   template:
     metadata:
       labels:
+        deployment: "00"
         fiobench: manual
+        subject: manual
     spec:
       containers:
         - name: fiobench
-          image: alpine:3.14
+          image: ghcr.io/pabloheigvd/tb-fiobench:latest
           # clever hack to keep pod running: https://stackoverflow.com/a/40093356
           command: [ "/bin/sh", "-c", "--" ]
           args: [ "while true; do sleep 30; done;" ]
