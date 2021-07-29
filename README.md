@@ -13,6 +13,7 @@ que pourrait héberger un fournisseur de cloud public. L’analyse et les résul
 indiquent que Longhorn peut mieux performer qu’un cluster EKS sur certaines métriques
 tel que l’écriture aléatoire et séquentielle. Longhorn offre aussi une durabilité configurable et
 surtout moins mystérieuse qu’une solution propriétaire comme un volume EBS.
+
 ---
 
 ## Jobs Fio
