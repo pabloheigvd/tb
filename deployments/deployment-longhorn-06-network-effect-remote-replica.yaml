@@ -1,0 +1,75 @@
+# A local volume with replica on another host
+# Note: requires
+# * one node tagged with "node2"
+# * one node with label kubernetes.io/hostname=10.193.72.32 which is not "node2"
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: fiobench-sc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "07"
+    subject: network-effect-remote-replica
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+  dataLocality: "disabled"
+  nodeSelector: node2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fiobench-pvc
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "07"
+    subject: network-effect-remote-replica
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+  storageClassName: fiobench-sc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiobench-deployment
+  namespace: mercado
+  labels:
+    fiobench: image
+    deployment: "07"
+    subject: network-effect-remote-replica
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fiobench: image
+      deployment: "07"
+      subject: network-effect-remote-replica
+  template:
+    metadata:
+      labels:
+        fiobench: image
+        deployment: "07"
+        subject: network-effect-remote-replica
+    spec:
+      containers:
+      - name: fiobench
+        image: ghcr.io/pabloheigvd/tb-fiobench:latest
+        command: [ "/bin/sh", "run-all-jobs.sh" ]
+        volumeMounts:
+          - name: fiobench-storage
+            mountPath: /data
+      nodeSelector:
+        kubernetes.io/hostname: "10.193.72.32"
+      volumes:
+        - name: fiobench-storage
+          persistentVolumeClaim:
+            claimName: fiobench-pvc
