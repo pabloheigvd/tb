@@ -31,3 +31,13 @@ docker pull ghcr.io/pabloheigvd/tb-fiobench:latest
 ```
 ## Deployments testés
 Les *deployments* utilisés se trouvent dans le dossier `deployments`. Les plugins de stockage Longhorn et EBS ont été testés.
+
+---
+## Slides
+Un pdf de la présentation est disponible (`slides.pdf`). Pour voir la présentation sur le web, installez `https://github.com/yusukebe/revealgo`, puis lancez:
+
+```bash
+revealgo --theme sky --transition linear slides.md
+```
+
+Pour générer un nouveau pdf, ouvrez `http://localhost:3000/?print-pdf` dans chrome puis `ctrl-p`.
