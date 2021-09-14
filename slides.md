@@ -11,6 +11,8 @@ Pablo Mercado
 
 note: f12 > console > Reveal.configure({ progress: true, slideNumber: true })
 
+Bonjour, ... je DEFENDS mon travail de ...
+
 ---
 <!-- .slide: style="text-align: left"; -->
 ## Sommaire
@@ -49,7 +51,6 @@ note:
 * tourner une application dans une VM n'est pas très performant
 * licence par processeur pouvant facilement totaliser jusqu'à $100k
 * démocratisation de k8, mode de développement standard
-* Au niveau de la suisse, ça bouge mais c'est hors sujet
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -58,15 +59,16 @@ note:
 Jens Axboe? <!-- .element: class="fragment" data-fragment-index="1" -->
 
 * Linux bloc layer maintainer du Linux kernel <!-- .element: class="fragment" data-fragment-index="2" -->
-* outil de benchmark de stockage: FIO <!-- .element: class="fragment" data-fragment-index="3" -->
-* FIO est open source et régulièrement mis à jour <!-- .element: class="fragment" data-fragment-index="4" -->
+* outil de benchmark de stockage: FIO <!-- .element: class="fragment" data-fragment-index="2" -->
+* FIO est open source et régulièrement mis à jour <!-- .element: class="fragment" data-fragment-index="2" -->
 
-FIO pour benchmark CAS (Container attached storage)? <!-- .element: class="fragment" data-fragment-index="5" -->
+FIO pour benchmark CAS (Container attached storage)? <!-- .element: class="fragment" data-fragment-index="3" -->
 
 note:
 
+* détour
 * au moins 15 ans qu'il a créé FIO, maintainer actuel de FIO
-* plrs personnes ont essayé de benchark du CAS avec FIO (papers, technical report...)
+* plrs personnes ont essayé de benchark du CAS avec FIO (papers, rapports techniques...)
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -82,8 +84,9 @@ Quelle implémentation choisir? <!-- .element: class="fragment" data-fragment-in
 
 note:
 
-* ne pas utiliser Hostpah avec k8 sauf pour optimisation mineures
-* container POV, volume monté dans le FS
+* ne pas utiliser Hostpah avec k8 sauf pour optimisations mineures
+* container POV, volume monté dans le FS, peu importe l'abstraction entre volume
+et container (merci k8)
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -139,7 +142,7 @@ note:
 * Vineyard est in-memory
 * OpenEBS implémentation open source
 * Piraeus demandé à iCoSys
-* cadre bleu foncé
+* noter le cadre bleu foncé de Rook
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -165,7 +168,11 @@ note: maturité de Rook (graduated vs Sandbox project)
 1. Configuration cluster EKS
 1. Exemple de manifest
 
-note: SSD pour tester si l'OS et l'outil avait un impact
+note:
+points importants:
+
+* SSD pour tester si l'OS et l'outil avait un impact
+* comment fonctionne dbench et comment j'ai fait mon propre benchmark
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -184,7 +191,6 @@ SSD sous test: *SAMSUNG MZVLB1T0HBLR-000H1*
 note:
 même hardware mais pas les mêmes performances... différence OS? taille de block
 utilisé consistent?
-Pourquoi benchmark du storage avant du CAS?
 
 1. consistence de l'outil de test
 2. démontré la qualité de l'introspection avec l'open source
@@ -224,7 +230,15 @@ Pourquoi l'output en JSON? <!-- .element: class="fragment" data-fragment-index="
 * parsing <!-- .element: class="fragment" data-fragment-index="5" -->
 * données exhaustives <!-- .element: class="fragment" data-fragment-index="5" -->
 
-note: rappel HDD mauvaises performances écriture aléatoire (tête de lecture)
+note:
+Lorsque l'on benchmark une solution de stockage, app <-> type de workload
+
+* IOPS - pr un bloc d'une certaine taille combien d'opérations IO sont réalisés
+à la seconde
+* bande passante - quel volume de données qui transite à la seconde
+* latence - est-ce qu'une opération se termine rapidement
+
+* production de graphiques
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -403,12 +417,13 @@ spec:
     claimName: fiobench-longhorn-pvc
 </code></pre>
 
-note: Job pour dbench puis lecture des logs, aucun manifest chez Architecting-IT
-Choix deployment, consulte les logs pour voir la fin du benchmark (~30m),
-récupération des fichiers json du benchmark
+note:
+
+* Job pour dbench puis lecture des logs, aucun manifest chez Architecting-IT
+* Choix deployment, consulte les logs pour voir la fin du benchmark (~30m),
+récupération des fichiers json du benchmark avec une session interactive
 
 ---
-
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
 ## Example de benchmarking
 
@@ -428,7 +443,7 @@ ce n'est pas la méthode que j'ai utilisé (pas de top, iftop et iostat)
 
 top -> longhorn (+ manager) processus travaillent
 iostat -> sda (12TB), regarder kB_read/s et kB_writn/s
-15:40 pas de read (job write), read bandwidth, passe a 600 puis 6000
+**15:40** pas de read (job write), read bandwidth, passe a 600 puis 6000
 iftop -> en bas à droite, avant de commencer job, ~1mb seconde puis ~40mb/s
 (example charger une page youtube avec une vidéo)
 
@@ -441,6 +456,8 @@ iftop -> en bas à droite, avant de commencer job, ~1mb seconde puis ~40mb/s
 1. Read/Write bandwidth
 1. Sequential Read/Write bandwidth
 1. Read/Write mix
+
+note: ce qui saute aux yeux
 
 ---
 <!-- .slide: style="font-size:0.6em;" data-transition="slide none" data-background-image="img/longhorn.svg" data-background-position="90% 10%" data-background-size="10%" -->
@@ -581,3 +598,39 @@ note: rapport final -> détail
 ## Questions ?
 
 note: ?
+
+---
+
+![read-bw-mean](figures/read_bw_mean.svg)
+
+---
+
+![read-iops](figures/read_iops.svg)
+
+---
+
+![read-latency](figures/read_latency.svg)
+
+---
+
+![rw-mix](figures/rw_mix.svg)
+
+---
+
+![seq-read-bw](figures/seq_read_bw.svg)
+
+---
+
+![seq-write-bw](figures/seq_write_bw.svg)
+
+---
+
+![write-bw-mean](figures/write_bw_mean.svg)
+
+---
+
+![write-iops](figures/write_iops.svg)
+
+---
+
+![write-latency](figures/write_latency.svg)
