@@ -48,9 +48,9 @@ sur la souveraineté numérique en cours d'élaboration
 
 note:
 
+* démocratisation de k8, mode de développement standard
 * tourner une application dans une VM n'est pas très performant
 * licence par processeur pouvant facilement totaliser jusqu'à $100k
-* démocratisation de k8, mode de développement standard
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -58,15 +58,17 @@ note:
 
 Jens Axboe? <!-- .element: class="fragment" data-fragment-index="1" -->
 
-* Linux bloc layer maintainer du Linux kernel <!-- .element: class="fragment" data-fragment-index="2" -->
+[Twitter](https://twitter.com/axboe) <!-- .element: class="fragment" data-fragment-index="2" -->
+
+* bloc layer maintainer du Linux kernel <!-- .element: class="fragment" data-fragment-index="2" -->
 * outil de benchmark de stockage: FIO <!-- .element: class="fragment" data-fragment-index="2" -->
 * FIO est open source et régulièrement mis à jour <!-- .element: class="fragment" data-fragment-index="2" -->
 
-FIO pour benchmark CAS (Container attached storage)? <!-- .element: class="fragment" data-fragment-index="3" -->
+FIO pour benchmark du CAS (Container attached storage)? <!-- .element: class="fragment" data-fragment-index="3" -->
 
 note:
 
-* détour
+* parlons de stockage pur avant le stockage ds un cluster k8
 * au moins 15 ans qu'il a créé FIO, maintainer actuel de FIO
 * plrs personnes ont essayé de benchark du CAS avec FIO (papers, rapports techniques...)
 
@@ -84,7 +86,7 @@ Quelle implémentation choisir? <!-- .element: class="fragment" data-fragment-in
 
 note:
 
-* ne pas utiliser Hostpah avec k8 sauf pour optimisations mineures
+* ne pas utiliser Hostpath avec k8 sauf pour optimisations mineures
 * container POV, volume monté dans le FS, peu importe l'abstraction entre volume
 et container (merci k8)
 
@@ -110,7 +112,10 @@ note:
 * offre un système de backup
 * open source
 
-note: plus de détails sur le fonctionnement plus loin
+note:
+
+* plus de détails sur le fonctionnement plus loin
+* backup pour les DR
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" data-background-image="img/aws.svg" data-background-position="90% 10%" data-background-size="10%" -->
@@ -137,7 +142,7 @@ Piraeus Datastore
 
 note:
 
-* paysage CNCF, filtre stockage + support
+* paysage CNCF (cloud native computing foundation), filtre stockage + support
 * ChubaoFS est pour les files
 * Vineyard est in-memory
 * OpenEBS implémentation open source
@@ -208,6 +213,7 @@ note:
 * 1 L. manager par pod (non représenté)
 * 1 L. engine par volume
 * L. engine distribue les replicas à travers les nodes
+* les replicas sont synchrones
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -249,9 +255,9 @@ Lorsque l'on benchmark une solution de stockage, app <-> type de workload
 name=read_iops
 readwrite=randread
 
-randrepeat=0            # disable seed for RNG
-verify=0                # verification is made when writting
-                        # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
+randrepeat=0
+verify=0
+
 ioengine=libaio
 direct=1
 gtod_reduce=1
@@ -300,9 +306,9 @@ Différence de méthode d'output:
 name=seq_read
 readwrite=read
 
-randrepeat=0            # disable seed for RNG
-verify=0                # verification is made when writting
-                        # https://fio.readthedocs.io/en/latest/fio_man.html#cmdoption-arg-verify
+randrepeat=0
+verify=0
+
 ioengine=libaio
 direct=1
 gtod_reduce=1
@@ -314,12 +320,10 @@ size=250G
 time_based
 ramp_time=10s
 runtime=30s
-group_reporting=1       # no group reporting, how can he have the correct values?
-                        # https://github.com/architectingit/k8sstorage/blob/main/perfraw.sh#L72
+group_reporting=1
+
 numjobs=4
-offset_increment=500M   # This option is useful if there are several jobs which
-                        # are intended to operate on a file in parallel disjoint
-                        # segments, with even spacing between the starting points
+offset_increment=500M
 
 [architecting-it-test7-sequential-read]
 </code></pre>
@@ -337,8 +341,11 @@ Mesure étalon, éviter *EBS optimized*:
   * instance EC2: t3.small
 * même version de Kubernetes que le cluster IICT
 
-note: cluster IICT, dans le rapport. On ne cherche pas à payer plus cher pour
-des performances spécifiques.
+note:
+
+* cluster IICT, dans le rapport
+* comparaison équitable
+* On ne cherche pas à payer plus cher pour des meilleures performances
 
 ---
 <!-- .slide: style="text-align: left; font-size: 0.6em" -->
@@ -435,17 +442,18 @@ iostat 10 (monitorer les opérations IO), top (processus)
 iftop (bande passante)
 debut - remote desktop, benchmark spécial
 benchmark - deployment exécute les commandes fios
-skip fin - job 8 fait des siennes, fio lourd produit des erreurs, relancer?
-         - expliquer kubectl apply cluster crash, aide au debug
-         - aws pas assez de permissions IAM et relancer jobs fio individuellement
-ce n'est pas la méthode que j'ai utilisé (pas de top, iftop et iostat)
-=> montrer que ça peut être fait
 
-top -> longhorn (+ manager) processus travaillent
-iostat -> sda (12TB), regarder kB_read/s et kB_writn/s
-**15:40** pas de read (job write), read bandwidth, passe a 600 puis 6000
-iftop -> en bas à droite, avant de commencer job, ~1mb seconde puis ~40mb/s
+* monitoring du benchmark peut être fait
+* iftop -> en bas à droite, avant de commencer job, ~1mb seconde puis ~40mb/s
 (example charger une page youtube avec une vidéo)
+* top -> longhorn (+ manager) processus travaillent
+* iostat -> sda (12TB), regarder kB_read/s et kB_writn/s
+**15:40** pas de read (job write), read bandwidth, passe a 600 puis 6000
+* skip fin
+  * job 8 fait des siennes, fio lourd produit des erreurs, relancer?
+  * expliquer kubectl apply cluster crash, aide au debug
+  * aws pas assez de permissions IAM et relancer jobs fio individuellement
+  * ce n'est pas la méthode que j'ai utilisé (pas de top, iftop et iostat)
 
 ---
 <!-- .slide: style="text-align: left;"-->
