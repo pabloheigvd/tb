@@ -49,7 +49,7 @@ plugins de stockage Longhorn et EBS ont été testés.
 ## Slides
 
 Un pdf de la présentation est disponible (`slides.pdf`). Pour voir la
-présentation sur le web, installez `https://github.com/yusukebe/revealgo`, puis lancez:
+présentation sur le web, installez `https://github.com/yusukebe/revealgo`, puis lancez :
 
 ```bash
 revealgo --theme sky --transition linear slides.md
@@ -65,3 +65,7 @@ chrome puis `ctrl-p`.
 available for free
 * [Lee Liu (LogDNA)](https://github.com/leeliu/dbench) for the original
 dbench
+
+## Moral License
+
+If you intend to use this work for your own paid work, please credit my name or this repository.
